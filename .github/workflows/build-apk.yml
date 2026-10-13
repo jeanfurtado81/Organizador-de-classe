@@ -37,9 +37,15 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Gerar APK
+    
+      - name: Gerar o APK
         run: |
-          cd projeto/diario-de-classe-android-offline/android
+          cd projeto/diario-de-classe-android-offline
+          npm install
+          npm install @capacitor/android@6.2.2
+          npx cap add android
+          npx cap sync android
+          cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
