@@ -31,15 +31,18 @@ jobs:
       - name: Extrair o projeto
         run: unzip -o diario-de-classe-android-offline.zip -d projeto
 
-      - name: Gerar o APK
-        run: |
-          cd projeto/diario-de-classe-android-offline
-          npm install
-npm install @capacitor/android
-npx cap add android
-npx cap sync android
-          chmod +x gradlew
-          ./gradlew assembleDebug
+     
+        - name: Gerar o APK
+          run: |
+            cd projeto/diario-de-classe-android-offline
+            npm install
+            npm install @capacitor/android
+            npx cap add android
+            npx cap sync android
+            cd android
+            chmod +x gradlew
+            ./gradlew assembleDebug
+
 
       - name: Disponibilizar o APK para baixar
         uses: actions/upload-artifact@v4
