@@ -35,9 +35,9 @@ jobs:
         run: |
           cd projeto/diario-de-classe-android-offline
           npm install
-          npx cap add android
-          npx cap sync android
-          cd android
+npm install @capacitor/android
+npx cap add android
+npx cap sync android
           chmod +x gradlew
           ./gradlew assembleDebug
 
