@@ -1,0 +1,50 @@
+name: Gerar APK do Diario de Classe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'diario-de-classe-android-offline.zip'
+      - '.github/workflows/build-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar os arquivos do repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Extrair o projeto
+        run: unzip -o diario-de-classe-android-offline.zip -d projeto
+
+      - name: Gerar o APK
+        run: |
+          cd projeto/diario-de-classe-android-offline
+          npm install
+          npx cap add android
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Disponibilizar o APK para baixar
+        uses: actions/upload-artifact@v4
+        with:
+          name: diario-de-classe-apk
+          path: projeto/diario-de-classe-android-offline/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
