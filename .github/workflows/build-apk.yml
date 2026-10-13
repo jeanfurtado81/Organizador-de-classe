@@ -1,18 +1,16 @@
+
 name: Gerar APK do Diario de Classe
 
 on:
-  workflow_dispatch:
   push:
-    paths:
-      - 'diario-de-classe-android-offline.zip'
-      - '.github/workflows/build-apk.yml'
-
-permissions:
-  contents: read
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Baixar os arquivos do repositorio
         uses: actions/checkout@v4
@@ -31,18 +29,19 @@ jobs:
       - name: Extrair o projeto
         run: unzip -o diario-de-classe-android-offline.zip -d projeto
 
-     
-        - name: Gerar o APK
-          run: |
-            cd projeto/diario-de-classe-android-offline
-            npm install
-            npm install @capacitor/android
-            npx cap add android
-            npx cap sync android
-            cd android
-            chmod +x gradlew
-            ./gradlew assembleDebug
+      - name: Instalar dependencias e preparar Android
+        run: |
+          cd projeto/diario-de-classe-android-offline
+          npm install
+          npm install @capacitor/android
+          npx cap add android
+          npx cap sync android
 
+      - name: Gerar APK
+        run: |
+          cd projeto/diario-de-classe-android-offline/android
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Disponibilizar o APK para baixar
         uses: actions/upload-artifact@v4
